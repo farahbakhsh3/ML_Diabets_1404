@@ -1,70 +1,44 @@
-# %% [markdown]
 # ## Diabet Machin Learning Project
 # # 1404 - 1
 
-# %% [markdown]
-# 
-
-# %%
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# %%
 data = pd.read_csv('diabetes.csv')
 print(data.head())
-
-# %%
 data.describe()
+print(data.shape)
 
-# %%
-data.shape
-
-# %%
 data['Outcome'].value_counts().plot(kind='bar')
 plt.title('Diabetes Outcome Distribution')
 
-# %%
 x = data.drop('Outcome', axis=1)
 y = data['Outcome']
-
-# %%
 x = np.array(x)
 y = np.array(y)
 
-# %%
 # normalize the data
 from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 x = scaler.fit_transform(x)
 
-
-# %%
 # split the data into training and testing sets
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                     test_size=0.2, 
                                                     random_state=7)
+print(x_train.shape, x_test.shape, y_train.shape, y_test.shape)
 
 
-# %%
-x_train.shape, x_test.shape, y_train.shape, y_test.shape
-
-# %%
 # import models
-
 from sklearn.naive_bayes import GaussianNB
 
 model = GaussianNB()
 model.fit(x_train, y_train)
-
-
-# %%
 y_pred_train = model.predict(x_train)
 y_pred_test = model.predict(x_test)
 
-
-# %%
 # Evaluation
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
@@ -73,8 +47,6 @@ test_accuracy = accuracy_score(y_test, y_pred_test)
 print(f'Training Accuracy: {train_accuracy}')
 print(f'Testing Accuracy: {test_accuracy}')
 
-
-# %%
 # confusion matrix
 cm = confusion_matrix(y_test, y_pred_test)
 print('Confusion Matrix:')
@@ -85,24 +57,17 @@ cr = classification_report(y_test, y_pred_test)
 print('Classification Report:')
 print(cr)
 
-
-# %%
 # plot confusion matrix
 import seaborn as sns
 plt.figure(figsize=(6,4))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
 
-
-# %%
 # save the model
-
 import joblib
 joblib.dump(model, 'diabetes_model.pkl')
 joblib.dump(scaler, 'scaler.pkl')
 
-
-# %%
-import joblib
+# load the model
 loaded_model = joblib.load('diabetes_model.pkl')
 loaded_scaler = joblib.load('scaler.pkl')
 
@@ -112,13 +77,9 @@ sample_data_scaled = loaded_scaler.transform(sample_data)
 prediction = loaded_model.predict(sample_data_scaled)
 print(f'Predicted Outcome: {prediction[0]}')  # 0: No Diabetes, 1: Diabetes
 
-# %% [markdown]
-# ## KNN
-
-# %%
+## KNN
 from sklearn.neighbors import KNeighborsClassifier
 
-# %%
 acc_train = []
 acc_test = []
 
@@ -140,13 +101,9 @@ plt.legend()
 plt.title('KNN Accuracy for different K values')
 plt.xlabel('Number of Neighbors K')
 
-# %% [markdown]
-# ## Decision Tree
-
-# %%
+## Decision Tree
 from sklearn.tree import DecisionTreeClassifier
 
-# %%
 acc_train = []
 acc_test = []
 
@@ -168,14 +125,9 @@ plt.legend()
 plt.title('Decision Tree Accuracy for different Max Depth values')
 plt.xlabel('Number of Max Depth K')
 
-
-# %% [markdown]
-# ## Random Forest
-
-# %%
+## Random Forest
 from sklearn.ensemble import RandomForestClassifier
 
-# %%
 acc_train = []
 acc_test = []
 
@@ -197,14 +149,9 @@ plt.legend()
 plt.title('Random Forest Accuracy for different n_estimators values')
 plt.xlabel('Number of Estimators K')
 
-
-# %% [markdown]
-# ## SVM
-
-# %%
+## SVM
 from sklearn.svm import SVC
 
-# %%
 dictKernels = {
     'linear': 'Linear Kernel',
     'poly': 'Polynomial Kernel',
@@ -244,13 +191,9 @@ plt.xlabel('Kernel Type')
 plt.xticks(rotation=-90)
 plt.show()
 
-# %% [markdown]
-# ## MLP
-
-# %%
+## MLP
 from sklearn.neural_network import MLPClassifier
 
-# %%
 acc_train = []
 acc_test = []
 for k in range(10, 200, 10):
@@ -271,13 +214,9 @@ plt.legend()
 plt.title('MLP Classifier Accuracy for different hidden layer sizes')
 plt.xlabel('Number of Neurons in Hidden Layer')
 
-# %% [markdown]
-# ## Gradient Boost
-
-# %%
+## Gradient Boost
 from sklearn.ensemble import GradientBoostingClassifier
 
-# %%
 acc_train = []
 acc_test = []
 for k in range(50, 500, 50):
@@ -297,26 +236,18 @@ plt.legend()
 plt.title('Gradient Boosting Accuracy for different n_estimators values')   
 plt.xlabel('Number of Estimators K')
 
-# %% [markdown]
-# ## Cross-validation
-
-# %%
+## Cross-validation
 from sklearn.model_selection import cross_val_score
 
-# %%
 # Cross-validation for Decision Tree
 dt = DecisionTreeClassifier(max_depth=5)
 cv_scores = cross_val_score(dt, x, y, cv=5, scoring='accuracy')
 print('CV Scores:', cv_scores)
 print(f'Mean CV Accuracy: {cv_scores.mean():.4f} (+/- {cv_scores.std():.4f})')
 
-# %% [markdown]
-# ## Grid Search for Hyperparameter Tuning
-
-# %%
+## Grid Search for Hyperparameter Tuning
 from sklearn.model_selection import GridSearchCV
 
-# %%
 # Grid Search for Decision Tree hyperparameters
 param_grid = {
     'max_depth': [3, 5, 7, 10, 15],
@@ -336,9 +267,7 @@ best_dt = grid_search.best_estimator_
 y_pred = best_dt.predict(x_test)
 print(f'Test Accuracy: {accuracy_score(y_test, y_pred):.4f}')
 
-# %%
 # Grid Search for MLP hyperparameters
-
 param_grid_mlp = {
     'hidden_layer_sizes': [(50,), (100,), (100,50)],
     'activation': ['relu', 'tanh'],
@@ -359,8 +288,3 @@ print('Classification Report:')
 print(classification_report(y_test, y_pred))
 print('Confusion Matrix:')
 print(confusion_matrix(y_test, y_pred))
-
-# %%
-
-
-
