@@ -12,6 +12,7 @@ print(data.shape)
 
 data['Outcome'].value_counts().plot(kind='bar')
 plt.title('Diabetes Outcome Distribution')
+plt.show()
 
 x = data.drop('Outcome', axis=1)
 y = data['Outcome']
@@ -61,6 +62,7 @@ print(cr)
 import seaborn as sns
 plt.figure(figsize=(6,4))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.show()
 
 # save the model
 import joblib
@@ -100,6 +102,7 @@ plt.plot(range(1,50), acc_test, label='Test Accuracy', color='orange', marker='o
 plt.legend()
 plt.title('KNN Accuracy for different K values')
 plt.xlabel('Number of Neighbors K')
+plt.show()
 
 ## Decision Tree
 from sklearn.tree import DecisionTreeClassifier
@@ -124,6 +127,7 @@ plt.plot(range(1,50), acc_test, label='Test Accuracy', color='orange', marker='o
 plt.legend()
 plt.title('Decision Tree Accuracy for different Max Depth values')
 plt.xlabel('Number of Max Depth K')
+plt.show()
 
 ## Random Forest
 from sklearn.ensemble import RandomForestClassifier
@@ -148,6 +152,7 @@ plt.plot(range(50, 500, 50), acc_test, label='Test Accuracy', color='orange', ma
 plt.legend()
 plt.title('Random Forest Accuracy for different n_estimators values')
 plt.xlabel('Number of Estimators K')
+plt.show()
 
 ## SVM
 from sklearn.svm import SVC
@@ -213,6 +218,7 @@ plt.plot(range(10, 200, 10), acc_test, label='Test Accuracy', color='orange', ma
 plt.legend()
 plt.title('MLP Classifier Accuracy for different hidden layer sizes')
 plt.xlabel('Number of Neurons in Hidden Layer')
+plt.show()
 
 ## Gradient Boost
 from sklearn.ensemble import GradientBoostingClassifier
@@ -235,6 +241,7 @@ plt.plot(range(50, 500, 50), acc_test, label='Test Accuracy', color='orange', ma
 plt.legend()
 plt.title('Gradient Boosting Accuracy for different n_estimators values')   
 plt.xlabel('Number of Estimators K')
+plt.show()
 
 ## Cross-validation
 from sklearn.model_selection import cross_val_score
