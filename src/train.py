@@ -1,7 +1,8 @@
+import joblib
 from data_loader import load_data
 from models import get_models
 from evaluate import evaluate_model
-import joblib
+
 
 X, y = load_data("data/diabetes.csv")
 models = get_models()
@@ -13,7 +14,6 @@ for name, model in models.items():
     results[name] = scores
     print(name, scores)
 
-# انتخاب بهترین مدل بر اساس F1
 best_model_name = max(results, key=lambda m: results[m]["f1"])
 best_model = models[best_model_name]
 

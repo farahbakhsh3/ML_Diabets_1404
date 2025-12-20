@@ -11,7 +11,7 @@ columns = [
 ]
 
 sample = pd.DataFrame(
-    [[5,116,74,0,0,25.6,0.201,30]],
+    [[5, 116, 74, .2, 90, 25.6, 0.201, 30]],
     columns=columns
 )
 prediction = model.predict(sample)

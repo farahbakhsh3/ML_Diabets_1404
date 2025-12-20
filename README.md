@@ -43,7 +43,7 @@ Key characteristics of this project:
 
 ---
 
-## 🗂 Project Structure
+## 📞 Project Structure
 
 ```
 ML_Diabets_1404/
@@ -57,10 +57,14 @@ ML_Diabets_1404/
 │   ├── evaluate.py         # Cross-validation metrics
 │   ├── tune.py             # Hyperparameter tuning
 │   ├── train.py            # Training & model selection
-│   └── predict.py          # Inference script
+│   ├── predict.py          # Inference script
+│   └── visualization.py    # EDA & plots
 │
 ├── models/
 │   └── best_model.joblib   # Final trained model
+│
+├── figures
+│   └── plots/              # Auto-saved visualizations
 │
 ├── requirements.txt
 └── README.md
@@ -87,7 +91,33 @@ pip install -r requirements.txt
 
 ## 🚀 How to Run
 
-### 1️⃣ Train and select the best model
+### 1️⃣ Exploratory Data Analysis (EDA) & Visualization
+
+Before training, the dataset is explored and visualized to understand feature distributions, relationships, and potential outliers.  
+
+**Key visualizations include:**
+
+- Feature distributions (Histogram / KDE)
+- Boxplots to detect outliers
+- Correlation heatmap
+- Pairplot of key features
+- Class distribution  
+
+**Sample visualizations (auto-saved in `plots/` folder):**
+
+<img src="figures/plots/histograms.png" alt="Feature distributions (Histogram / KDE)" style="width:200px; height:auto;">
+
+<img src="figures/plots/boxplots.png" alt="Boxplots to detect outliers" style="width:200px; height:auto;">
+
+<img src="figures/plots/correlation_matrix.png" alt="Correlation Matrix" style="width:200px; height:auto;">
+
+<img src="figures/plots/pairplot.png" alt="Pairplot of Key Features" style="width:200px; height:auto;">
+
+<img src="figures/plots/class_distribution.png" alt="Class Distribution" style="width:200px; height:auto;">
+
+---
+
+### 2️⃣ Train and select the best model
 
 ```bash
 python src/train.py
@@ -102,78 +132,85 @@ This will:
 
 ---
 
-### 2️⃣ Make a prediction
+### 3️⃣ Make a prediction
 
 ```bash
 python src/predict.py
 ```
 
 The prediction script:
+
 - Loads the trained model
 - Accepts a sample input as a **pandas DataFrame**
 - Outputs prediction and class probabilities
 
 ---
 
+## 🧩 Handling Missing Values (Zero Imputation)
+
+Some features (`Glucose`, `BloodPressure`, `SkinThickness`, `Insulin`, `BMI`) contain `0` values considered **missing**.
+
+- Missing values are replaced using **median imputation** inside the pipeline.
+- Prevents **data leakage** because the median is computed only from training data.
+- Scaling is applied **after imputation** for models sensitive to feature magnitude.
+
+---
+
+## ⚖️ Scaling Strategy
+
+- **Models sensitive to feature scales:** SVM, MLP, KNN, Naive Bayes → `StandardScaler` applied  
+- **Tree-based models:** DecisionTree, RandomForest → Scaling not necessary  
+- Ensures consistent preprocessing without bias or leakage.
+
+---
+
 ## 🧠 Models Used
 
-The following models are evaluated:
-
-- Naive Bayes
-- Support Vector Machine (SVM)
-- Random Forest
-- Multi-Layer Perceptron (MLP)
-
-⚠️ Only the **best-performing model** is tuned and kept.
+| Model | Scaling | Notes |
+|-------|---------|-------|
+| Naive Bayes | Yes | GaussianNB, scale applied due to feature variance |
+| KNN | Yes | KNN requires scaling for distance calculation |
+| SVM | Yes | Kernel-based model sensitive to scale, class_weight="balanced" |
+| DecisionTree | No | Tree-based, scale not needed |
+| RandomForest | No | Tree-based, scale not needed, class_weight="balanced" |
+| MLP | Yes | Neural network sensitive to scale, hidden_layer_sizes=(64,32) |
 
 ---
 
 ## 📈 Evaluation Strategy
 
-Models are evaluated using **5-Fold Cross-Validation** with the following metrics:
-
-- Accuracy
-- F1-score (primary decision metric)
-- ROC-AUC
-
-Why F1-score?
-- The dataset is mildly imbalanced
-- F1 balances precision and recall
-- Accuracy alone can be misleading
+- **5-Fold Cross-Validation**
+- Metrics: Accuracy, F1-score (primary), ROC-AUC
+- F1-score is prioritized due to mild class imbalance
 
 ---
 
 ## 🔍 Hyperparameter Tuning
 
-- Implemented using `GridSearchCV`
-- Applied **only to the best model**
-- Prevents overfitting and unnecessary computation
-- Uses F1-score as the optimization metric
+- Implemented with `GridSearchCV`
+- Applied only to the **best-performing model**
+- Optimizes F1-score, prevents overfitting
 
 ---
 
 ## 🛡️ Design Decisions
 
-- **Pipelines** are used to avoid data leakage
-- **StandardScaler** is applied only where appropriate
-- Feature names are preserved during inference
-- No notebook dependency for execution
-- Code is modular and reusable
+- Pipelines prevent data leakage
+- StandardScaler applied selectively
+- Feature names preserved during inference
+- Modular, reusable code
 
 ---
 
 ## 📦 Model Persistence
 
-The final trained model is saved using `joblib`:
+Final trained model:
 
 ```
 models/best_model.joblib
 ```
 
-This model can be directly used in:
-- APIs (FastAPI / Flask)
-- Web apps (Streamlit)
-- Production inference pipelines
+- Ready for API, web app, or production inference
 
 ---
 
@@ -188,11 +225,11 @@ This model can be directly used in:
 
 ## 📜 License
 
-This project is licensed under the **GPL-3.0 License**.
+GPL-3.0 License
 
 ---
 
 ## 👤 Author
 
-This project was developed as a **clean and defensible machine learning implementation**, focusing on correctness rather than superficial results.
+Clean and defensible machine learning implementation prioritizing correctness over superficial results.
 
